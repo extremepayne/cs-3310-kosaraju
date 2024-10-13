@@ -14,7 +14,7 @@ fn main() {
         (3, 6), (8, 1), (1, 3), (1, 9), (8, 7)
     ]);
     // expected result from this graph: (4, 3, 3, 1, 0)
-    let res = kosaraju(&gr);
+    let res = kosaraju(&gr, &nodes);
     println!("{:?}", gr);
     println!("{:?}", res);
     // for e in gr.edges(nodes[8].unwrap()){
@@ -23,6 +23,19 @@ fn main() {
 }
 
 /// Returns sizes of top five strongly connected components.
-fn kosaraju(gr: &DiGraph<usize,bool>) -> (u32, u32, u32, u32, u32) {
+fn kosaraju(gr: &DiGraph<usize,bool>, node_list: &[Option<NodeIndex>]) -> (u32, u32, u32, u32, u32) {
+    // TODO
     (0, 0, 0, 0, 0)
+}
+
+/// Reverses directionality of all edges in input graph
+fn graph_reverse(gr: &DiGraph<usize,bool>) -> DiGraph<usize, bool> {
+    // TODO
+    return gr.clone()
+}
+
+/// Returns graph with node weights in a topological order
+fn topo_sort(gr: &DiGraph<usize,bool>) -> DiGraph<usize, bool> {
+    // TODO
+    return gr.clone()
 }
