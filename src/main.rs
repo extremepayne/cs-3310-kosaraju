@@ -14,13 +14,15 @@ fn main() {
         (3, 6), (8, 1), (1, 3), (1, 9), (8, 7)
     ]);
     // expected result from this graph: (4, 3, 3, 1, 0)
+    let res = kosaraju(&gr);
     println!("{:?}", gr);
+    println!("{:?}", res);
     // for e in gr.edges(nodes[8].unwrap()){
         // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
     // }
 }
 
 /// Returns sizes of top five strongly connected components.
-fn kosaraju(gr: DiGraph<u32,bool>) -> (u32, u32, u32, u32, u32) {
+fn kosaraju(gr: &DiGraph<usize,bool>) -> (u32, u32, u32, u32, u32) {
     (0, 0, 0, 0, 0)
 }
