@@ -13,6 +13,7 @@ fn main() {
         (5, 9), (9, 7), (7, 5), (4, 6), (4, 8), (6, 8), (8, 3),
         (3, 6), (8, 1), (1, 3), (1, 9), (8, 7)
     ]);
+    // expected result from this graph: (4, 3, 3, 1, 0)
     println!("{:?}", gr);
     // for e in gr.edges(nodes[8].unwrap()){
         // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
