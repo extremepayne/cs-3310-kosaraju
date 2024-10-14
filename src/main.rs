@@ -1,41 +1,59 @@
-use petgraph::graph::{Graph, DiGraph, NodeIndex};
+use petgraph::graph::{DiGraph, Graph, NodeIndex};
 use petgraph::Directed;
 // use petgraph::visit::EdgeRef;
 
 fn main() {
-    let mut gr: DiGraph<usize,bool> = Graph::<usize, bool, Directed>::with_capacity(11, 16);
+    let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::with_capacity(11, 16);
     let mut nodes: [Option<NodeIndex>; 11] = Default::default();
     for i in 0..nodes.len() {
         nodes[i] = Some(gr.add_node(i));
     }
     gr.extend_with_edges(&[
-        (0, 2), (2, 4), (2, 10), (4, 0), (10, 7), (10, 5),
-        (5, 9), (9, 7), (7, 5), (4, 6), (4, 8), (6, 8), (8, 3),
-        (3, 6), (8, 1), (1, 3), (1, 9), (8, 7)
+        (0, 2),
+        (2, 4),
+        (2, 10),
+        (4, 0),
+        (10, 7),
+        (10, 5),
+        (5, 9),
+        (9, 7),
+        (7, 5),
+        (4, 6),
+        (4, 8),
+        (6, 8),
+        (8, 3),
+        (3, 6),
+        (8, 1),
+        (1, 3),
+        (1, 9),
+        (8, 7),
     ]);
     // expected result from this graph: (4, 3, 3, 1, 0)
     let res = kosaraju(&gr, &nodes);
     println!("{:?}", gr);
     println!("{:?}", res);
     // for e in gr.edges(nodes[8].unwrap()){
-        // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
+    // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
     // }
 }
 
 /// Returns sizes of top five strongly connected components.
-fn kosaraju(gr: &DiGraph<usize,bool>, node_list: &[Option<NodeIndex>]) -> (u32, u32, u32, u32, u32) {
+fn kosaraju(
+    gr: &DiGraph<usize, bool>,
+    node_list: &[Option<NodeIndex>],
+) -> (u32, u32, u32, u32, u32) {
     // TODO
     (0, 0, 0, 0, 0)
 }
 
 /// Reverses directionality of all edges in input graph
-fn graph_reverse(gr: &DiGraph<usize,bool>) -> DiGraph<usize, bool> {
+fn graph_reverse(gr: &DiGraph<usize, bool>) -> DiGraph<usize, bool> {
     // TODO
-    return gr.clone()
+    return gr.clone();
 }
 
 /// Returns graph with node weights in a topological order
-fn topo_sort(gr: &DiGraph<usize,bool>) -> DiGraph<usize, bool> {
+fn topo_sort(gr: &DiGraph<usize, bool>) -> DiGraph<usize, bool> {
     // TODO
-    return gr.clone()
+    return gr.clone();
 }
