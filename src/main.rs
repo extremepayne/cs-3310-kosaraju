@@ -72,7 +72,6 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<
 
 /// Performs a depth first search on a graph. Does nothing.
 fn DFS_iter(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) {
-    // DFS part of the routine
     // stack for keeping track of nodes to visit next
     let mut stack: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
     // list, synced with indicies of nodes, for keeping track of which nodes
