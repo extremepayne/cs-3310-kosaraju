@@ -64,7 +64,29 @@ fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGr
 }
 
 /// Returns graph with node weights in a topological order
-fn topo_sort(gr: &DiGraph<usize, bool>) -> DiGraph<usize, bool> {
-    // TODO
+fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<usize, bool> {
+    // DFS part of the routine
+    // stack for keeping track of nodes to visit next
+    let mut stack: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
+    // list, synced with indicies of nodes, for keeping track of which nodes
+    // have been visited
+    let mut explored = vec![false; gr.node_count()];
+    // start from nodes[0] for now to avoid needing another parameter
+    stack.push(nodes[0].expect("nodes array doesn't have a first element!"));
+    while !stack.is_empty() {
+        let v = stack.pop();
+        // necessary to sync explored with nodes
+        let v_index = nodes
+            .iter()
+            .position(|&x| x == v)
+            .expect("NodeIndex doesn't exist in provided nodes array!");
+        if !explored[v_index] {
+            explored[v_index] = true;
+            for edge in gr.edges(v.unwrap()) {
+                stack.push(edge.target());
+            }
+        }
+    }
+    // TODO: actually do topological sort
     return gr.clone();
 }
