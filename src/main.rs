@@ -1,3 +1,5 @@
+#![recursion_limit = "5000"]
+
 use petgraph::graph::{DiGraph, Graph, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
