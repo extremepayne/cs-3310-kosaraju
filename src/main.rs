@@ -65,6 +65,11 @@ fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGr
 
 /// Returns graph with node weights in a topological order
 fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<usize, bool> {
+    gr.clone()
+}
+
+/// Performs a depth first search on a graph. Does nothing.
+fn DFS_iter(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) {
     // DFS part of the routine
     // stack for keeping track of nodes to visit next
     let mut stack: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
@@ -87,6 +92,4 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<
             }
         }
     }
-    // TODO: actually do topological sort
-    return gr.clone();
 }
