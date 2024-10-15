@@ -40,28 +40,22 @@ fn main() {
 }
 
 /// Returns sizes of top five strongly connected components.
-fn kosaraju(
-    gr: &DiGraph<usize, bool>,
-    node_list: &[Option<NodeIndex>],
-) -> (u32, u32, u32, u32, u32) {
+fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> (u32, u32, u32, u32, u32) {
     // TODO
     (0, 0, 0, 0, 0)
 }
 
 /// Reverses directionality of all edges in input graph
-fn graph_reverse(
-    gr: &DiGraph<usize, bool>,
-    node_list: &[Option<NodeIndex>],
-) -> DiGraph<usize, bool> {
+fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<usize, bool> {
     // create empty graph to hold reversed graph
     let mut rev_gr: DiGraph<usize, bool> =
         Graph::<usize, bool>::with_capacity(gr.node_count(), gr.edge_count());
     // add same nodes as original graph
-    for node in node_list {
+    for node in nodes {
         rev_gr.add_node(*gr.node_weight(node.unwrap()).unwrap());
     }
     // add edges, but with source and target reversed
-    for node in node_list {
+    for node in nodes {
         for edge in gr.edges(node.unwrap()) {
             rev_gr.add_edge(edge.target(), edge.source(), false);
         }
