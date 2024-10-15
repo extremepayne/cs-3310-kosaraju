@@ -1,6 +1,6 @@
 use petgraph::graph::{DiGraph, Graph, NodeIndex};
+use petgraph::visit::EdgeRef;
 use petgraph::Directed;
-// use petgraph::visit::EdgeRef;
 
 fn main() {
     let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::with_capacity(11, 16);
@@ -32,6 +32,8 @@ fn main() {
     let res = kosaraju(&gr, &nodes);
     println!("{:?}", gr);
     println!("{:?}", res);
+    let rev_gr = graph_reverse(&gr, &nodes);
+    println!("{:?}", rev_gr);
     // for e in gr.edges(nodes[8].unwrap()){
     // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
     // }
@@ -47,9 +49,24 @@ fn kosaraju(
 }
 
 /// Reverses directionality of all edges in input graph
-fn graph_reverse(gr: &DiGraph<usize, bool>) -> DiGraph<usize, bool> {
-    // TODO
-    return gr.clone();
+fn graph_reverse(
+    gr: &DiGraph<usize, bool>,
+    node_list: &[Option<NodeIndex>],
+) -> DiGraph<usize, bool> {
+    // create empty graph to hold reversed graph
+    let mut rev_gr: DiGraph<usize, bool> =
+        Graph::<usize, bool>::with_capacity(gr.node_count(), gr.edge_count());
+    // add same nodes as original graph
+    for node in node_list {
+        rev_gr.add_node(*gr.node_weight(node.unwrap()).unwrap());
+    }
+    // add edges, but with source and target reversed
+    for node in node_list {
+        for edge in gr.edges(node.unwrap()) {
+            rev_gr.add_edge(edge.target(), edge.source(), false);
+        }
+    }
+    rev_gr
 }
 
 /// Returns graph with node weights in a topological order
