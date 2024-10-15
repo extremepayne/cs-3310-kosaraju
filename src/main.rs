@@ -71,7 +71,7 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<
     // list, synced with indicies of nodes, for keeping track of which nodes
     // have been visited
     let mut explored = vec![false; gr.node_count()];
-    // start from nodes[0] for now to avoid needing another parameter
+    // start searching from nodes[0] for now to avoid needing another parameter
     stack.push(nodes[0].expect("nodes array doesn't have a first element!"));
     while !stack.is_empty() {
         let v = stack.pop();
