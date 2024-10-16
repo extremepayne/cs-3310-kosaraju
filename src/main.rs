@@ -14,7 +14,13 @@ fn main() {
         sanity_checks();
     } else {
         let gr = read_file(&args[1]);
-        // let mut nodes: [Option<NodeIndex>; gr.node_count()] = Default::default();
+        let mut nodes: Vec<Option<NodeIndex>> = Vec::with_capacity(gr.node_count());
+        for node in gr.node_indices() {
+            nodes.push(Some(node));
+        }
+        let sccs = kosaraju(&gr, &nodes);
+        println!("Top five strongly connected component sizes:");
+        println!("{:?}", sccs);
     }
 }
 
