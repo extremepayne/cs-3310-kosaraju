@@ -3,7 +3,6 @@
 use petgraph::graph::{DiGraph, Graph, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
-use petgraph::Incoming;
 
 fn main() {
     let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::with_capacity(11, 16);
