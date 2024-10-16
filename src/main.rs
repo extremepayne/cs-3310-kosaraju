@@ -13,15 +13,26 @@ fn main() {
         println!("No arguments passed. Defaulting to sanity checks");
         sanity_checks();
     } else {
-        read_file(&args[2]);
+        let gr = read_file(&args[1]);
     }
 }
 
-fn read_file(filename: &str) {
+/// Reads in a test case file and constructs a graph
+fn read_file(filename: &str) -> DiGraph<usize, bool> {
     println!("reading data file: {filename}");
     let data = File::open(filename).unwrap();
     let data_reader = io::BufReader::new(data).lines();
-    // TODO: read in and process data
+    let mut edges: Vec<(u32, u32)> = Vec::new();
+    for line in data_reader.flatten() {
+        let mut iter = line.split_whitespace();
+        let a: u32 = iter.next().unwrap().parse().unwrap();
+        let b: u32 = iter.next().unwrap().parse().unwrap();
+        edges.push((a,b));
+    }
+    let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::new();
+    gr.extend_with_edges(edges);
+    // println!("{:?}", gr);
+    gr
 }
 
 fn sanity_checks() {
