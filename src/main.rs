@@ -12,7 +12,16 @@ fn main() {
     if args.len() == 1 {
         println!("No arguments passed. Defaulting to sanity checks");
         sanity_checks();
+    } else {
+        read_file(&args[2]);
     }
+}
+
+fn read_file(filename: &str) {
+    println!("reading data file: {filename}");
+    let data = File::open(filename).unwrap();
+    let data_reader = io::BufReader::new(data).lines();
+    // TODO: read in and process data
 }
 
 fn sanity_checks() {
