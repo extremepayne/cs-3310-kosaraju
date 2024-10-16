@@ -37,6 +37,8 @@ fn main() {
     println!("{:?}", res);
     let rev_gr = graph_reverse(&gr, &nodes);
     println!("{:?}", rev_gr);
+    let sorted = topo_sort(&gr, &nodes);
+    println!("{:?}", sorted);
     // for e in gr.edges(nodes[8].unwrap()){
     // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
     // }
@@ -79,9 +81,35 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> Vec<Node
     fn dfs_topo(
         gr: &Graph<usize, bool>,
         nodes: &[Option<NodeIndex>],
-        order: Vec<NodeIndex>,
-        explored: Vec<bool>,
+        order: &mut Vec<NodeIndex>,
+        explored: &mut Vec<bool>,
+        start_node: Option<NodeIndex>,
     ) {
+        let start_node_index = nodes
+            .iter()
+            .position(|&x| x == start_node)
+            .expect("NodeIndex doesn't exist in provided nodes array!");
+        explored[start_node_index] = true;
+        for edge in gr.edges(start_node.unwrap()) {
+            let v = edge.target();
+            let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+            if !explored[v_index] {
+                dfs_topo(gr, nodes, order, explored, Some(v));
+            }
+        }
+        // give this node the current lowest avaliable indexing
+        // it should have highest at the end, so we will reverse
+        // the vector
+        order.push(start_node.unwrap());
     }
+    // main loop
+    for node in nodes {
+        let node_index = nodes.iter().position(|&x| x == *node).unwrap();
+        if !explored[node_index] {
+            dfs_topo(gr, nodes, &mut order, &mut explored, *node);
+        }
+    }
+    // reverse the vector as noted above
+    order.reverse();
     order
 }
