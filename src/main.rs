@@ -17,9 +17,9 @@ fn main() {
         for node in gr.node_indices() {
             nodes.push(Some(node));
         }
-        println!("{:?}", nodes);
+        println!("nodes {:?}", nodes);
         let order = topo_sort(&gr, &nodes);
-        println!("{:?}", order);
+        println!("order {:?}", order);
         let sccs = kosaraju(&gr, &nodes);
         println!("Top five strongly connected component sizes:");
         println!("{:?}", sccs);
@@ -187,32 +187,36 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> Vec<N
     let mut nodes_processed: u32 = 0;
     // main loop
     for node in nodes {
-        stack.push(node.unwrap());
+        // println!("order {:?}", order);
+        // println!("stack {:?}", stack);
         let node_index = nodes.iter().position(|&x| x == *node).unwrap();
-        in_stack[node_index] = true;
-        while !stack.is_empty() {
-            let current = stack.last();
-            // this is so ugly i hate it but this is due in an hour
-            let current_index = nodes
-                .iter()
-                .position(|&x| x == Some(*current.unwrap()))
-                .unwrap();
-            if !explored[current_index] {
-                explored[current_index] = true;
-                for edge in gr.edges(*current.unwrap()) {
-                    let v = edge.target();
-                    let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
-                    if !explored[v_index] && !in_stack[v_index] {
-                        stack.push(v);
-                        in_stack[v_index] = true;
+        if !explored[node_index] {
+            stack.push(node.unwrap());
+            in_stack[node_index] = true;
+            while !stack.is_empty() {
+                let current = stack.last();
+                // this is so ugly i hate it but this is due in an hour
+                let current_index = nodes
+                    .iter()
+                    .position(|&x| x == Some(*current.unwrap()))
+                    .unwrap();
+                if !explored[current_index] {
+                    explored[current_index] = true;
+                    for edge in gr.edges(*current.unwrap()) {
+                        let v = edge.target();
+                        let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+                        if !explored[v_index] && !in_stack[v_index] {
+                            stack.push(v);
+                            in_stack[v_index] = true;
+                        }
                     }
+                } else {
+                    // give this node the current lowest avaliable indexing
+                    // it should have highest at the end, so we will reverse
+                    // the vector
+                    order.push(*current.unwrap());
+                    stack.pop();
                 }
-            } else {
-                // give this node the current lowest avaliable indexing
-                // it should have highest at the end, so we will reverse
-                // the vector
-                order.push(*current.unwrap());
-                stack.pop();
             }
         }
         nodes_processed += 1;
@@ -224,4 +228,3 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> Vec<N
     order.reverse();
     order
 }
-
