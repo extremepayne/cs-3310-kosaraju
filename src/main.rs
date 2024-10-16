@@ -3,8 +3,19 @@
 use petgraph::graph::{DiGraph, Graph, NodeIndex};
 use petgraph::visit::EdgeRef;
 use petgraph::Directed;
+use std::env;
+use std::fs::File;
+use std::io::{self, BufRead};
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    if args.len() == 1 {
+        println!("No arguments passed. Defaulting to sanity checks");
+        sanity_checks();
+    }
+}
+
+fn sanity_checks() {
     let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::with_capacity(11, 16);
     let mut nodes: [Option<NodeIndex>; 11] = Default::default();
     for i in 0..nodes.len() {
