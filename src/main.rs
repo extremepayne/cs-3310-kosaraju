@@ -62,15 +62,14 @@ fn sanity_checks() {
         (8, 7),
     ]);
     // expected result from this graph: (4, 3, 3, 1, 0)
-    let res = kosaraju(&gr, &nodes);
-    println!("{:?}", gr);
-    println!("{:?}", res);
+    println!("graph {:?}", gr);
+    println!("nodes {:?}", nodes);
     let rev_gr = graph_reverse(&gr, &nodes);
-    println!("{:?}", rev_gr);
+    println!("reversed graph {:?}", rev_gr);
     let sorted = topo_sort(&gr, &nodes);
-    println!("{:?}", sorted);
+    println!("topological sort of verticies {:?}", sorted);
     let sccs = kosaraju(&gr, &nodes);
-    println!("{:?}", sccs);
+    println!("top 5 sccs {:?}", sccs);
     println!("should be [4, 3, 3, 1, 0]")
     // for e in gr.edges(nodes[8].unwrap()){
     // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
