@@ -34,7 +34,8 @@ fn read_file(filename: &str) -> DiGraph<usize, bool> {
         let mut iter = line.split_whitespace();
         let a: u32 = iter.next().unwrap().parse().unwrap();
         let b: u32 = iter.next().unwrap().parse().unwrap();
-        edges.push((a, b));
+        // we are subtracting one to avoid petgraph creating an extraneous node at index 0
+        edges.push((a - 1, b - 1));
     }
     let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::new();
     gr.extend_with_edges(edges);
