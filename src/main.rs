@@ -66,6 +66,9 @@ fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGr
     rev_gr
 }
 
+/// Returns graph with node weights in a topological order.
+/// Uses recursive DFS. NB ensure recursion_limit is set sufficiently high
+/// for the problems you want to work with.
 fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> Vec<NodeIndex> {
     // list for keeping track of nodes in their final order
     let mut order: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
