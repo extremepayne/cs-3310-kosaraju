@@ -72,5 +72,16 @@ fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGr
 fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> Vec<NodeIndex> {
     // list for keeping track of nodes in their final order
     let mut order: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
+    // list, synced with indicies of nodes, for keeping track of which nodes
+    // have been visited
+    let mut explored = vec![false; gr.node_count()];
+    // DFS subroutine
+    fn dfs_topo(
+        gr: &Graph<usize, bool>,
+        nodes: &[Option<NodeIndex>],
+        order: Vec<NodeIndex>,
+        explored: Vec<bool>,
+    ) {
+    }
     order
 }
