@@ -59,3 +59,28 @@ fn DFS_iter(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) {
         }
     }
 }
+// DFS subroutine
+fn dfs_topo(
+    gr: &Graph<usize, bool>,
+    nodes: &Vec<Option<NodeIndex>>,
+    order: &mut Vec<NodeIndex>,
+    explored: &mut Vec<bool>,
+    start_node: Option<NodeIndex>,
+) {
+    let start_node_index = nodes
+        .iter()
+        .position(|&x| x == start_node)
+        .expect("NodeIndex doesn't exist in provided nodes array!");
+    explored[start_node_index] = true;
+    for edge in gr.edges(start_node.unwrap()) {
+        let v = edge.target();
+        let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+        if !explored[v_index] {
+            dfs_topo(gr, nodes, order, explored, Some(v));
+        }
+    }
+    // give this node the current lowest avaliable indexing
+    // it should have highest at the end, so we will reverse
+    // the vector
+    order.push(start_node.unwrap());
+}

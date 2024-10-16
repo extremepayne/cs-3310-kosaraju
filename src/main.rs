@@ -12,10 +12,14 @@ fn main() {
         sanity_checks();
     } else {
         let gr = read_file(&args[1]);
+        println!("Reading file finished");
         let mut nodes: Vec<Option<NodeIndex>> = Vec::with_capacity(gr.node_count());
         for node in gr.node_indices() {
             nodes.push(Some(node));
         }
+        println!("{:?}", nodes);
+        let order = topo_sort(&gr, &nodes);
+        println!("{:?}", order);
         let sccs = kosaraju(&gr, &nodes);
         println!("Top five strongly connected component sizes:");
         println!("{:?}", sccs);
@@ -167,48 +171,57 @@ fn graph_reverse(
     rev_gr
 }
 
-/// Returns graph with node weights in a topological order.
-/// Uses recursive DFS. NB ensure recursion_limit is set sufficiently high
-/// for the problems you want to work with.
+/// Returns list with node references in a topological order.
+/// Using iterative DFS (hopefully).
 fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> Vec<NodeIndex> {
     // list for keeping track of nodes in their final order
     let mut order: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
     // list, synced with indicies of nodes, for keeping track of which nodes
     // have been visited
     let mut explored = vec![false; gr.node_count()];
-    // DFS subroutine
-    fn dfs_topo(
-        gr: &Graph<usize, bool>,
-        nodes: &Vec<Option<NodeIndex>>,
-        order: &mut Vec<NodeIndex>,
-        explored: &mut Vec<bool>,
-        start_node: Option<NodeIndex>,
-    ) {
-        let start_node_index = nodes
-            .iter()
-            .position(|&x| x == start_node)
-            .expect("NodeIndex doesn't exist in provided nodes array!");
-        explored[start_node_index] = true;
-        for edge in gr.edges(start_node.unwrap()) {
-            let v = edge.target();
-            let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
-            if !explored[v_index] {
-                dfs_topo(gr, nodes, order, explored, Some(v));
-            }
-        }
-        // give this node the current lowest avaliable indexing
-        // it should have highest at the end, so we will reverse
-        // the vector
-        order.push(start_node.unwrap());
-    }
+    // stack for keeping track of nodes to visit next
+    let mut stack: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
+    // list, synced indicies, for keeping track of which nodes are in stack?
+    let mut in_stack = vec![false; gr.node_count()];
+    // counter for keeping track of how many nodes so far
+    let mut nodes_processed: u32 = 0;
     // main loop
     for node in nodes {
+        stack.push(node.unwrap());
         let node_index = nodes.iter().position(|&x| x == *node).unwrap();
-        if !explored[node_index] {
-            dfs_topo(gr, nodes, &mut order, &mut explored, *node);
+        in_stack[node_index] = true;
+        while !stack.is_empty() {
+            let current = stack.last();
+            // this is so ugly i hate it but this is due in an hour
+            let current_index = nodes
+                .iter()
+                .position(|&x| x == Some(*current.unwrap()))
+                .unwrap();
+            if !explored[current_index] {
+                explored[current_index] = true;
+                for edge in gr.edges(*current.unwrap()) {
+                    let v = edge.target();
+                    let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+                    if !explored[v_index] && !in_stack[v_index] {
+                        stack.push(v);
+                        in_stack[v_index] = true;
+                    }
+                }
+            } else {
+                // give this node the current lowest avaliable indexing
+                // it should have highest at the end, so we will reverse
+                // the vector
+                order.push(*current.unwrap());
+                stack.pop();
+            }
+        }
+        nodes_processed += 1;
+        if nodes_processed % 1000 == 0 {
+            println!("Finished topological order for {nodes_processed} nodes");
         }
     }
     // reverse the vector as noted above
     order.reverse();
     order
 }
+
