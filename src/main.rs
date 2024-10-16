@@ -85,6 +85,7 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> (u32, u32
     for node in magic_order {
         let node_index = nodes.iter().position(|&x| x == Some(node)).unwrap();
         if !explored[node_index] {
+            scc_id += 1;
             dfs_scc(&gr, &nodes, &mut explored, scc_id, &mut scc_ids, Some(node));
         }
     }
