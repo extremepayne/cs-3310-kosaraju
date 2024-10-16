@@ -84,3 +84,26 @@ fn dfs_topo(
     // the vector
     order.push(start_node.unwrap());
 }
+    // DFS subroutine
+    fn dfs_scc(
+        gr: &Graph<usize, bool>,
+        nodes: &Vec<Option<NodeIndex>>,
+        explored: &mut Vec<bool>,
+        scc_id: usize,
+        scc_ids: &mut Vec<Option<usize>>,
+        start_node: Option<NodeIndex>,
+    ) {
+        let start_node_index = nodes
+            .iter()
+            .position(|&x| x == start_node)
+            .expect("NodeIndex doesn't exist in provided nodes array!");
+        explored[start_node_index] = true;
+        scc_ids[start_node_index] = Some(scc_id);
+        for edge in gr.edges(start_node.unwrap()) {
+            let v = edge.target();
+            let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+            if !explored[v_index] {
+                dfs_scc(gr, nodes, explored, scc_id, scc_ids, Some(v));
+            }
+        }
+    }

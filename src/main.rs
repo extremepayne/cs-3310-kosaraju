@@ -17,9 +17,9 @@ fn main() {
         for node in gr.node_indices() {
             nodes.push(Some(node));
         }
-        println!("nodes {:?}", nodes);
-        let order = topo_sort(&gr, &nodes);
-        println!("order {:?}", order);
+        // println!("nodes {:?}", nodes);
+        // topo_sort(&gr, &nodes);
+        // println!("order {:?}", order);
         let sccs = kosaraju(&gr, &nodes);
         println!("Top five strongly connected component sizes:");
         println!("{:?}", sccs);
@@ -101,35 +101,40 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> [u32; 
     let mut scc_id: usize = 0;
     // vec, indicies synced, to keep track of which scc a node belongs to
     let mut scc_ids: Vec<Option<usize>> = vec![None; gr.node_count()];
-    // DFS subroutine
-    fn dfs_scc(
-        gr: &Graph<usize, bool>,
-        nodes: &Vec<Option<NodeIndex>>,
-        explored: &mut Vec<bool>,
-        scc_id: usize,
-        scc_ids: &mut Vec<Option<usize>>,
-        start_node: Option<NodeIndex>,
-    ) {
-        let start_node_index = nodes
-            .iter()
-            .position(|&x| x == start_node)
-            .expect("NodeIndex doesn't exist in provided nodes array!");
-        explored[start_node_index] = true;
-        scc_ids[start_node_index] = Some(scc_id);
-        for edge in gr.edges(start_node.unwrap()) {
-            let v = edge.target();
-            let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
-            if !explored[v_index] {
-                dfs_scc(gr, nodes, explored, scc_id, scc_ids, Some(v));
-            }
-        }
-    }
+    // stack for keeping track of nodes to visit next
+    let mut stack: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
+    // list, synced indicies, for keeping track of which nodes are in stack?
+    let mut in_stack = vec![false; gr.node_count()];
+    // counter for keeping track of how many nodes so far
+    let mut nodes_processed: u32 = 0;
     // main loop
     for node in magic_order {
         let node_index = nodes.iter().position(|&x| x == Some(node)).unwrap();
         if !explored[node_index] {
             scc_id += 1;
-            dfs_scc(gr, nodes, &mut explored, scc_id, &mut scc_ids, Some(node));
+            stack.push(node);
+            in_stack[node_index] = true;
+            while !stack.is_empty() {
+                let current = stack.pop();
+                let current_index = nodes.iter().position(|&x| x == current).unwrap();
+                in_stack[current_index] = false;
+                if !explored[current_index] {
+                    explored[current_index] = true;
+                    scc_ids[current_index] = Some(scc_id);
+                    for edge in gr.edges(current.unwrap()) {
+                        let v = edge.target();
+                        let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+                        if !explored[v_index] && !in_stack[v_index] {
+                            stack.push(v);
+                            in_stack[v_index] = true;
+                        }
+                    }
+                }
+            }
+            nodes_processed += 1;
+            if nodes_processed % 1000 == 0 {
+                println!("Finished scc computation for {nodes_processed} nodes");
+            }
         }
     }
     // get sizes out of scc_ids
