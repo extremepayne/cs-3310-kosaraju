@@ -71,6 +71,7 @@ fn sanity_checks() {
     println!("{:?}", sorted);
     let sccs = kosaraju(&gr, &nodes);
     println!("{:?}", sccs);
+    println!("should be [4, 3, 3, 1, 0]")
     // for e in gr.edges(nodes[8].unwrap()){
     // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
     // }
