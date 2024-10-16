@@ -14,6 +14,7 @@ fn main() {
         sanity_checks();
     } else {
         let gr = read_file(&args[1]);
+        // let mut nodes: [Option<NodeIndex>; gr.node_count()] = Default::default();
     }
 }
 
@@ -37,9 +38,9 @@ fn read_file(filename: &str) -> DiGraph<usize, bool> {
 
 fn sanity_checks() {
     let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::with_capacity(11, 16);
-    let mut nodes: [Option<NodeIndex>; 11] = Default::default();
-    for i in 0..nodes.len() {
-        nodes[i] = Some(gr.add_node(i));
+    let mut nodes: Vec<Option<NodeIndex>> = Vec::with_capacity(11);
+    for i in 0..11 {
+        nodes.push(Some(gr.add_node(i)));
     }
     gr.extend_with_edges([
         (0, 2),
@@ -77,7 +78,7 @@ fn sanity_checks() {
 }
 
 /// Returns sizes of top five strongly connected components.
-fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> [u32; 5] {
+fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> [u32; 5] {
     // reverse graph
     let gr_rev = graph_reverse(gr, nodes);
     // topologically sort reversed graph to produce magic ordering
@@ -94,7 +95,7 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> [u32; 5] 
     // DFS subroutine
     fn dfs_scc(
         gr: &Graph<usize, bool>,
-        nodes: &[Option<NodeIndex>],
+        nodes: &Vec<Option<NodeIndex>>,
         explored: &mut Vec<bool>,
         scc_id: usize,
         scc_ids: &mut Vec<Option<usize>>,
@@ -141,7 +142,7 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> [u32; 5] 
 }
 
 /// Reverses directionality of all edges in input graph
-fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGraph<usize, bool> {
+fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> DiGraph<usize, bool> {
     // create empty graph to hold reversed graph
     let mut rev_gr: DiGraph<usize, bool> =
         Graph::<usize, bool>::with_capacity(gr.node_count(), gr.edge_count());
@@ -161,7 +162,7 @@ fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> DiGr
 /// Returns graph with node weights in a topological order.
 /// Uses recursive DFS. NB ensure recursion_limit is set sufficiently high
 /// for the problems you want to work with.
-fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> Vec<NodeIndex> {
+fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> Vec<NodeIndex> {
     // list for keeping track of nodes in their final order
     let mut order: Vec<NodeIndex> = Vec::with_capacity(gr.node_count());
     // list, synced with indicies of nodes, for keeping track of which nodes
@@ -170,7 +171,7 @@ fn topo_sort(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> Vec<Node
     // DFS subroutine
     fn dfs_topo(
         gr: &Graph<usize, bool>,
-        nodes: &[Option<NodeIndex>],
+        nodes: &Vec<Option<NodeIndex>>,
         order: &mut Vec<NodeIndex>,
         explored: &mut Vec<bool>,
         start_node: Option<NodeIndex>,
