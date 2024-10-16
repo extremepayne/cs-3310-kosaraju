@@ -38,13 +38,15 @@ fn main() {
     println!("{:?}", rev_gr);
     let sorted = topo_sort(&gr, &nodes);
     println!("{:?}", sorted);
+    let sccs = kosaraju(&gr, &nodes);
+    println!("{:?}", sccs);
     // for e in gr.edges(nodes[8].unwrap()){
     // println!("we got an edge with source {:?} and dest {:?}", e.source(), e.target());
     // }
 }
 
 /// Returns sizes of top five strongly connected components.
-fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> (u32, u32, u32, u32, u32) {
+fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> [u32; 5] {
     // reverse graph
     let gr_rev = graph_reverse(&gr, &nodes);
     // topologically sort reversed graph to produce magic ordering
@@ -55,16 +57,16 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> (u32, u32
     // have been visited
     let mut explored = vec![false; gr.node_count()];
     // variable to keep track of which scc we're working on
-    let mut scc_id: u32 = 0;
+    let mut scc_id: usize = 0;
     // vec, indicies synced, to keep track of which scc a node belongs to
-    let mut scc_ids: Vec<Option<u32>> = vec![None; gr.node_count()];
+    let mut scc_ids: Vec<Option<usize>> = vec![None; gr.node_count()];
     // DFS subroutine
     fn dfs_scc(
         gr: &Graph<usize, bool>,
         nodes: &[Option<NodeIndex>],
         explored: &mut Vec<bool>,
-        scc_id: u32,
-        scc_ids: &mut Vec<Option<u32>>,
+        scc_id: usize,
+        scc_ids: &mut Vec<Option<usize>>,
         start_node: Option<NodeIndex>,
     ) {
         let start_node_index = nodes
@@ -89,8 +91,22 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> (u32, u32
             dfs_scc(&gr, &nodes, &mut explored, scc_id, &mut scc_ids, Some(node));
         }
     }
-    // TODO: get top five sizes out of scc_ids
-    (0, 0, 0, 0, 0)
+    // get sizes out of scc_ids
+    let mut scc_sizes: Vec<u32> = vec![0; scc_id + 1];
+    for id in scc_ids {
+        scc_sizes[id.unwrap()] += 1;
+    }
+    // reverse sort to get biggest first
+    scc_sizes.sort();
+    scc_sizes.reverse();
+    // pad out to five if necessary
+    while scc_sizes.len() < 5 {
+        scc_sizes.push(0)
+    }
+    // convert to exactly sized array for returning
+    const NUM: usize = 5;
+    let top_scc_sizes: [u32; 5] = scc_sizes[..NUM].try_into().unwrap();
+    top_scc_sizes
 }
 
 /// Reverses directionality of all edges in input graph
