@@ -45,7 +45,50 @@ fn main() {
 
 /// Returns sizes of top five strongly connected components.
 fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> (u32, u32, u32, u32, u32) {
-    // TODO
+    // reverse graph
+    let gr_rev = graph_reverse(&gr, &nodes);
+    // topologically sort reversed graph to produce magic ordering
+    let magic_order = topo_sort(&gr_rev, &nodes);
+    // second pass of dfs
+    //
+    // list, synced with indicies of nodes, for keeping track of which nodes
+    // have been visited
+    let mut explored = vec![false; gr.node_count()];
+    // variable to keep track of which scc we're working on
+    let mut scc_id: u32 = 0;
+    // vec, indicies synced, to keep track of which scc a node belongs to
+    let mut scc_ids: Vec<Option<u32>> = vec![None; gr.node_count()];
+    // DFS subroutine
+    fn dfs_scc(
+        gr: &Graph<usize, bool>,
+        nodes: &[Option<NodeIndex>],
+        explored: &mut Vec<bool>,
+        scc_id: u32,
+        scc_ids: &mut Vec<Option<u32>>,
+        start_node: Option<NodeIndex>,
+    ) {
+        let start_node_index = nodes
+            .iter()
+            .position(|&x| x == start_node)
+            .expect("NodeIndex doesn't exist in provided nodes array!");
+        explored[start_node_index] = true;
+        scc_ids[start_node_index] = Some(scc_id);
+        for edge in gr.edges(start_node.unwrap()) {
+            let v = edge.target();
+            let v_index = nodes.iter().position(|&x| x == Some(v)).unwrap();
+            if !explored[v_index] {
+                dfs_scc(gr, nodes, explored, scc_id, scc_ids, Some(v));
+            }
+        }
+    }
+    // main loop
+    for node in magic_order {
+        let node_index = nodes.iter().position(|&x| x == Some(node)).unwrap();
+        if !explored[node_index] {
+            dfs_scc(&gr, &nodes, &mut explored, scc_id, &mut scc_ids, Some(node));
+        }
+    }
+    // TODO: get top five sizes out of scc_ids
     (0, 0, 0, 0, 0)
 }
 
