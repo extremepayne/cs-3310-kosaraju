@@ -10,7 +10,7 @@ fn main() {
     for i in 0..nodes.len() {
         nodes[i] = Some(gr.add_node(i));
     }
-    gr.extend_with_edges(&[
+    gr.extend_with_edges([
         (0, 2),
         (2, 4),
         (2, 10),
@@ -48,9 +48,9 @@ fn main() {
 /// Returns sizes of top five strongly connected components.
 fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> [u32; 5] {
     // reverse graph
-    let gr_rev = graph_reverse(&gr, &nodes);
+    let gr_rev = graph_reverse(gr, nodes);
     // topologically sort reversed graph to produce magic ordering
-    let magic_order = topo_sort(&gr_rev, &nodes);
+    let magic_order = topo_sort(&gr_rev, nodes);
     // second pass of dfs
     //
     // list, synced with indicies of nodes, for keeping track of which nodes
@@ -88,7 +88,7 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &[Option<NodeIndex>]) -> [u32; 5] 
         let node_index = nodes.iter().position(|&x| x == Some(node)).unwrap();
         if !explored[node_index] {
             scc_id += 1;
-            dfs_scc(&gr, &nodes, &mut explored, scc_id, &mut scc_ids, Some(node));
+            dfs_scc(gr, nodes, &mut explored, scc_id, &mut scc_ids, Some(node));
         }
     }
     // get sizes out of scc_ids
