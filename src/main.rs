@@ -28,7 +28,7 @@ fn read_file(filename: &str) -> DiGraph<usize, bool> {
         let mut iter = line.split_whitespace();
         let a: u32 = iter.next().unwrap().parse().unwrap();
         let b: u32 = iter.next().unwrap().parse().unwrap();
-        edges.push((a,b));
+        edges.push((a, b));
     }
     let mut gr: DiGraph<usize, bool> = Graph::<usize, bool, Directed>::new();
     gr.extend_with_edges(edges);
@@ -142,7 +142,10 @@ fn kosaraju(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> [u32; 
 }
 
 /// Reverses directionality of all edges in input graph
-fn graph_reverse(gr: &DiGraph<usize, bool>, nodes: &Vec<Option<NodeIndex>>) -> DiGraph<usize, bool> {
+fn graph_reverse(
+    gr: &DiGraph<usize, bool>,
+    nodes: &Vec<Option<NodeIndex>>,
+) -> DiGraph<usize, bool> {
     // create empty graph to hold reversed graph
     let mut rev_gr: DiGraph<usize, bool> =
         Graph::<usize, bool>::with_capacity(gr.node_count(), gr.edge_count());
