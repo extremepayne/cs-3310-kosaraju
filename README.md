@@ -6,7 +6,7 @@ Using the existing implementation of graphs in Rust provided by petgraph, but re
 
 ## Usage
 
-Run without arguments for sanity checks. Pass a single filename to read in that file as a graph. See test data in [data](data/) for examples of the format.
+Run without arguments for sanity checks. Pass a single filename to read in that file as a graph. See test data in [data](data/) for examples of the format. These examples are taken from [algorithmsilluminated.org](https://algorithmsilluminated.org).
 
 ## Lessons Learned
 
